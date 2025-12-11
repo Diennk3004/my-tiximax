@@ -9,7 +9,7 @@ class MenuRoleController extends Controller
     public function assignMenuToRole(string $task,?string $id = '0',Request $request){
         $data=array();
         $checked=true;
-        $message="";      
+        $message="";
         if($request->isMethod("post")){
             $menuRole=null;
             if($task==="add"){
@@ -24,8 +24,9 @@ class MenuRoleController extends Controller
                 $menuRole->role_id=$request->role_id;
             }
             $menuRole->save();
-            $data["menu_role"]=$menuRole;
+            $data["menu_role"]=$menuRole;       
+            $message="Assign menu to role successfully";     
         }
-        return response()->json(["data"=>$data,"message"=>$message,"checked"=>$checked],200);
+        return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
     }
 }

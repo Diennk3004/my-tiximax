@@ -16,39 +16,59 @@ class MenuController extends Controller
             return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
              
     }
-    public function create(Request $request){
-        $data=array();
-        $checked=true;
-        $message="";
-        if($request->isMethod("post")){
-            $menu=new Menu;
-            $menu->name=$request->name;      
-            $menu->url=$request->url;     
-            $menu->save();
-            $data["menu"]=$menu;
-        }
-        return response()->json(["data"=>$data,"message"=>$message,"checked"=>$checked],200);
-    }
-    public function update(string $id,Request $request){
-        $data=array();
-        $checked=true;
-        $message="";
-        if($request->isMethod("post")){            
-            $menu=Menu::find($id);
-            if(!$menu){
+    public function getDetail(string $id=null){
+            $checked=true;
+            $message="";
+            $data=array();   
+            if(!$id){
                 $checked=false;
-                $message="Menu not found";
+                $message="Item not founded";
+            }    
+            if($checked===true){
+                $menu=Menu::find($id);
+                $data["menu"]=$menu;     
+            }            
+            return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
+    }
+    public function save(?string $id,Request $request){        
+        $checked=true;
+        $message="";
+        $data=array();
+        if($request->isMethod("post")){
+            $menu=null;
+            if($id){                
+                $menu=Menu::find($id);
+                if(!$menu){
+                    $checked=false;
+                    $message="Item not founded";
+                }
             }else{
+                $menu=new Menu;
+                if(!$request->name){
+                    $checked=false;
+                    $message="Name is empty";
+                }
+                if(!$request->url){
+                    $checked=false;
+                    $message="Url is empty";
+                }
+            }                        
+            if($checked==true){
                 if($request->name){
-                    $menu->name=$request->name;                
+                    $menu->name=$request->name;
                 }
                 if($request->url){
                     $menu->url=$request->url;
-                }
+                }                
                 $menu->save();
-                $data["menu"]=$menu;
-            }
+                $data["menu"]=$menu; 
+                if($id){
+                    $message="Update item successfully";
+                }     else{
+                    $message="Create item successfully";        
+                }                  
+            }                                  
         }
-        return response()->json(["data"=>$data,"message"=>$message,"checked"=>$checked],200);
-    }
+        return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
+    }    
 }
