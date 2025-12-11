@@ -1,0 +1,937 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 15.3
+-- Dumped by pg_dump version 15.3
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: cache; Type: TABLE; Schema: public; Owner: root
+--
+
+CREATE TABLE public.cache (
+    key character varying(255) NOT NULL,
+    value text NOT NULL,
+    expiration integer NOT NULL
+);
+
+
+ALTER TABLE public.cache OWNER TO root;
+
+--
+-- Name: cache_locks; Type: TABLE; Schema: public; Owner: root
+--
+
+CREATE TABLE public.cache_locks (
+    key character varying(255) NOT NULL,
+    owner character varying(255) NOT NULL,
+    expiration integer NOT NULL
+);
+
+
+ALTER TABLE public.cache_locks OWNER TO root;
+
+--
+-- Name: failed_jobs; Type: TABLE; Schema: public; Owner: root
+--
+
+CREATE TABLE public.failed_jobs (
+    id bigint NOT NULL,
+    uuid character varying(255) NOT NULL,
+    connection text NOT NULL,
+    queue text NOT NULL,
+    payload text NOT NULL,
+    exception text NOT NULL,
+    failed_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE public.failed_jobs OWNER TO root;
+
+--
+-- Name: failed_jobs_id_seq; Type: SEQUENCE; Schema: public; Owner: root
+--
+
+CREATE SEQUENCE public.failed_jobs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.failed_jobs_id_seq OWNER TO root;
+
+--
+-- Name: failed_jobs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
+--
+
+ALTER SEQUENCE public.failed_jobs_id_seq OWNED BY public.failed_jobs.id;
+
+
+--
+-- Name: job_batches; Type: TABLE; Schema: public; Owner: root
+--
+
+CREATE TABLE public.job_batches (
+    id character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
+    total_jobs integer NOT NULL,
+    pending_jobs integer NOT NULL,
+    failed_jobs integer NOT NULL,
+    failed_job_ids text NOT NULL,
+    options text,
+    cancelled_at integer,
+    created_at integer NOT NULL,
+    finished_at integer
+);
+
+
+ALTER TABLE public.job_batches OWNER TO root;
+
+--
+-- Name: jobs; Type: TABLE; Schema: public; Owner: root
+--
+
+CREATE TABLE public.jobs (
+    id bigint NOT NULL,
+    queue character varying(255) NOT NULL,
+    payload text NOT NULL,
+    attempts smallint NOT NULL,
+    reserved_at integer,
+    available_at integer NOT NULL,
+    created_at integer NOT NULL
+);
+
+
+ALTER TABLE public.jobs OWNER TO root;
+
+--
+-- Name: jobs_id_seq; Type: SEQUENCE; Schema: public; Owner: root
+--
+
+CREATE SEQUENCE public.jobs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.jobs_id_seq OWNER TO root;
+
+--
+-- Name: jobs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
+--
+
+ALTER SEQUENCE public.jobs_id_seq OWNED BY public.jobs.id;
+
+
+--
+-- Name: menu; Type: TABLE; Schema: public; Owner: root
+--
+
+CREATE TABLE public.menu (
+    id bigint NOT NULL,
+    name character varying(255) NOT NULL,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone,
+    url character varying(255)
+);
+
+
+ALTER TABLE public.menu OWNER TO root;
+
+--
+-- Name: menu_id_seq; Type: SEQUENCE; Schema: public; Owner: root
+--
+
+CREATE SEQUENCE public.menu_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.menu_id_seq OWNER TO root;
+
+--
+-- Name: menu_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
+--
+
+ALTER SEQUENCE public.menu_id_seq OWNED BY public.menu.id;
+
+
+--
+-- Name: menu_role; Type: TABLE; Schema: public; Owner: root
+--
+
+CREATE TABLE public.menu_role (
+    id bigint NOT NULL,
+    menu_id bigint NOT NULL,
+    role_id bigint NOT NULL,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone
+);
+
+
+ALTER TABLE public.menu_role OWNER TO root;
+
+--
+-- Name: menu_role_id_seq; Type: SEQUENCE; Schema: public; Owner: root
+--
+
+CREATE SEQUENCE public.menu_role_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.menu_role_id_seq OWNER TO root;
+
+--
+-- Name: menu_role_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
+--
+
+ALTER SEQUENCE public.menu_role_id_seq OWNED BY public.menu_role.id;
+
+
+--
+-- Name: migrations; Type: TABLE; Schema: public; Owner: root
+--
+
+CREATE TABLE public.migrations (
+    id integer NOT NULL,
+    migration character varying(255) NOT NULL,
+    batch integer NOT NULL
+);
+
+
+ALTER TABLE public.migrations OWNER TO root;
+
+--
+-- Name: migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: root
+--
+
+CREATE SEQUENCE public.migrations_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.migrations_id_seq OWNER TO root;
+
+--
+-- Name: migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
+--
+
+ALTER SEQUENCE public.migrations_id_seq OWNED BY public.migrations.id;
+
+
+--
+-- Name: password_reset_tokens; Type: TABLE; Schema: public; Owner: root
+--
+
+CREATE TABLE public.password_reset_tokens (
+    email character varying(255) NOT NULL,
+    token character varying(255) NOT NULL,
+    created_at timestamp(0) without time zone
+);
+
+
+ALTER TABLE public.password_reset_tokens OWNER TO root;
+
+--
+-- Name: personal_access_tokens; Type: TABLE; Schema: public; Owner: root
+--
+
+CREATE TABLE public.personal_access_tokens (
+    id bigint NOT NULL,
+    tokenable_type character varying(255) NOT NULL,
+    tokenable_id bigint NOT NULL,
+    name text NOT NULL,
+    token character varying(64) NOT NULL,
+    abilities text,
+    last_used_at timestamp(0) without time zone,
+    expires_at timestamp(0) without time zone,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone
+);
+
+
+ALTER TABLE public.personal_access_tokens OWNER TO root;
+
+--
+-- Name: personal_access_tokens_id_seq; Type: SEQUENCE; Schema: public; Owner: root
+--
+
+CREATE SEQUENCE public.personal_access_tokens_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.personal_access_tokens_id_seq OWNER TO root;
+
+--
+-- Name: personal_access_tokens_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
+--
+
+ALTER SEQUENCE public.personal_access_tokens_id_seq OWNED BY public.personal_access_tokens.id;
+
+
+--
+-- Name: roles; Type: TABLE; Schema: public; Owner: root
+--
+
+CREATE TABLE public.roles (
+    id bigint NOT NULL,
+    name character varying(255) NOT NULL,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone
+);
+
+
+ALTER TABLE public.roles OWNER TO root;
+
+--
+-- Name: roles_id_seq; Type: SEQUENCE; Schema: public; Owner: root
+--
+
+CREATE SEQUENCE public.roles_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.roles_id_seq OWNER TO root;
+
+--
+-- Name: roles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
+--
+
+ALTER SEQUENCE public.roles_id_seq OWNED BY public.roles.id;
+
+
+--
+-- Name: sessions; Type: TABLE; Schema: public; Owner: root
+--
+
+CREATE TABLE public.sessions (
+    id character varying(255) NOT NULL,
+    user_id bigint,
+    ip_address character varying(45),
+    user_agent text,
+    payload text NOT NULL,
+    last_activity integer NOT NULL
+);
+
+
+ALTER TABLE public.sessions OWNER TO root;
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: root
+--
+
+CREATE TABLE public.users (
+    id bigint NOT NULL,
+    name character varying(255) NOT NULL,
+    email character varying(255) NOT NULL,
+    email_verified_at timestamp(0) without time zone,
+    password character varying(255) NOT NULL,
+    remember_token character varying(100),
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone,
+    username character varying(255),
+    phone character varying(255),
+    role_id bigint
+);
+
+
+ALTER TABLE public.users OWNER TO root;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: root
+--
+
+CREATE SEQUENCE public.users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_id_seq OWNER TO root;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
+--
+
+ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
+
+
+--
+-- Name: failed_jobs id; Type: DEFAULT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.failed_jobs ALTER COLUMN id SET DEFAULT nextval('public.failed_jobs_id_seq'::regclass);
+
+
+--
+-- Name: jobs id; Type: DEFAULT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.jobs ALTER COLUMN id SET DEFAULT nextval('public.jobs_id_seq'::regclass);
+
+
+--
+-- Name: menu id; Type: DEFAULT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.menu ALTER COLUMN id SET DEFAULT nextval('public.menu_id_seq'::regclass);
+
+
+--
+-- Name: menu_role id; Type: DEFAULT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.menu_role ALTER COLUMN id SET DEFAULT nextval('public.menu_role_id_seq'::regclass);
+
+
+--
+-- Name: migrations id; Type: DEFAULT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.migrations_id_seq'::regclass);
+
+
+--
+-- Name: personal_access_tokens id; Type: DEFAULT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.personal_access_tokens ALTER COLUMN id SET DEFAULT nextval('public.personal_access_tokens_id_seq'::regclass);
+
+
+--
+-- Name: roles id; Type: DEFAULT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.roles ALTER COLUMN id SET DEFAULT nextval('public.roles_id_seq'::regclass);
+
+
+--
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Data for Name: cache; Type: TABLE DATA; Schema: public; Owner: root
+--
+
+COPY public.cache (key, value, expiration) FROM stdin;
+laravel-cache-boost.roster.scan	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	1765126149
+\.
+
+
+--
+-- Data for Name: cache_locks; Type: TABLE DATA; Schema: public; Owner: root
+--
+
+COPY public.cache_locks (key, owner, expiration) FROM stdin;
+\.
+
+
+--
+-- Data for Name: failed_jobs; Type: TABLE DATA; Schema: public; Owner: root
+--
+
+COPY public.failed_jobs (id, uuid, connection, queue, payload, exception, failed_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: job_batches; Type: TABLE DATA; Schema: public; Owner: root
+--
+
+COPY public.job_batches (id, name, total_jobs, pending_jobs, failed_jobs, failed_job_ids, options, cancelled_at, created_at, finished_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: jobs; Type: TABLE DATA; Schema: public; Owner: root
+--
+
+COPY public.jobs (id, queue, payload, attempts, reserved_at, available_at, created_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: menu; Type: TABLE DATA; Schema: public; Owner: root
+--
+
+COPY public.menu (id, name, created_at, updated_at, url) FROM stdin;
+1	Menu 1	2025-12-05 09:27:59	2025-12-05 09:27:59	\N
+2	Menu 2	2025-12-05 09:28:02	2025-12-05 09:28:02	\N
+3	Menu 3	2025-12-05 09:28:08	2025-12-05 09:28:08	\N
+4	Menu 4	2025-12-05 09:28:18	2025-12-05 09:28:18	\N
+5	Menu 5	2025-12-05 09:28:20	2025-12-05 09:28:20	\N
+6	Menu 6	2025-12-05 09:28:23	2025-12-05 09:28:23	\N
+7	Role	2025-12-08 16:14:54	2025-12-08 16:14:54	/admin/role/list
+8	User	2025-12-08 16:15:30	2025-12-08 16:15:30	/admin/user/list
+12	Menu	2025-12-08 16:25:16	2025-12-08 16:25:16	/admin/menu/list
+\.
+
+
+--
+-- Data for Name: menu_role; Type: TABLE DATA; Schema: public; Owner: root
+--
+
+COPY public.menu_role (id, menu_id, role_id, created_at, updated_at) FROM stdin;
+1	1	1	2025-12-05 09:30:21	2025-12-05 09:30:21
+2	2	1	2025-12-05 09:30:29	2025-12-05 09:30:29
+3	3	1	2025-12-05 09:30:31	2025-12-05 09:30:31
+4	4	1	2025-12-05 09:30:34	2025-12-05 09:30:34
+5	5	1	2025-12-05 09:30:37	2025-12-05 09:30:37
+6	6	1	2025-12-05 09:30:39	2025-12-05 09:30:39
+7	1	2	2025-12-05 09:30:55	2025-12-05 09:30:55
+8	2	2	2025-12-05 09:31:00	2025-12-05 09:31:00
+9	3	2	2025-12-05 09:31:03	2025-12-05 09:31:03
+10	4	3	2025-12-05 09:31:14	2025-12-05 09:39:21
+11	5	3	2025-12-05 09:31:18	2025-12-05 09:39:26
+12	6	3	2025-12-05 09:31:21	2025-12-05 09:39:31
+13	7	1	2025-12-08 17:06:15	2025-12-08 17:06:15
+14	8	1	2025-12-08 17:06:27	2025-12-08 17:06:27
+15	12	1	2025-12-08 17:06:31	2025-12-08 17:06:31
+\.
+
+
+--
+-- Data for Name: migrations; Type: TABLE DATA; Schema: public; Owner: root
+--
+
+COPY public.migrations (id, migration, batch) FROM stdin;
+1	0001_01_01_000000_create_users_table	1
+2	0001_01_01_000001_create_cache_table	1
+3	0001_01_01_000002_create_jobs_table	1
+4	2025_12_02_162119_create_personal_access_tokens_table	1
+5	2025_12_04_035200_update_users_table	2
+6	2025_12_04_085100_create_permission_table	3
+7	2025_12_04_093206_create_user_permission_table	4
+8	2025_12_05_075530_create_roles_table	5
+9	2025_12_05_080025_drop_user_permission_table	6
+10	2025_12_05_080030_drop_permission_table	6
+11	2025_12_05_081748_update_users_table	7
+12	2025_12_05_082427_drop_user_permission_table	8
+13	2025_12_05_082441_drop_permission_table	8
+14	2025_12_05_082819_create_menu_table	9
+15	2025_12_05_090925_create_menu_role_table	9
+16	2025_12_08_160722_update_menu_table	10
+\.
+
+
+--
+-- Data for Name: password_reset_tokens; Type: TABLE DATA; Schema: public; Owner: root
+--
+
+COPY public.password_reset_tokens (email, token, created_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: personal_access_tokens; Type: TABLE DATA; Schema: public; Owner: root
+--
+
+COPY public.personal_access_tokens (id, tokenable_type, tokenable_id, name, token, abilities, last_used_at, expires_at, created_at, updated_at) FROM stdin;
+1	App\\Models\\User	1	API_Token	6eb77a112964c186de6ac93c06035d120ca9eaf375b46f3d4c0ceaf2c6238061	["*"]	\N	\N	2025-12-04 16:35:20	2025-12-04 16:35:20
+2	App\\Models\\User	1	API_Token	1b69cf48d1a496da8ea70485b169f242402b2d81437227d48afbecb0d5c5c017	["*"]	\N	\N	2025-12-05 04:54:23	2025-12-05 04:54:23
+3	App\\Models\\User	1	API_Token	34454dc3c5536ac2ad2c86cd578366f7657239c68169a27d528aee9c6d087e01	["*"]	\N	\N	2025-12-05 04:54:48	2025-12-05 04:54:48
+4	App\\Models\\User	1	API_Token	68f75e2fae98e082b9131c0dec945cc279adbcd1bc1dfb930a6e2dc123c6a42f	["*"]	\N	\N	2025-12-05 04:55:13	2025-12-05 04:55:13
+5	App\\Models\\User	1	API_Token	9b6e56dbdc7803b53dc3ab79949fab87eec5a7847a170831e1c3bc0e6e66a72d	["*"]	\N	\N	2025-12-05 07:12:47	2025-12-05 07:12:47
+6	App\\Models\\User	1	API_Token	4454f38efa42d0b07e653cda4b45b923ebe6d77bda3f88e32a82da34bff0d273	["*"]	\N	\N	2025-12-05 09:44:39	2025-12-05 09:44:39
+7	App\\Models\\User	1	API_Token	82f22a41a9e691ef338e14a85edff72bcdef1d0a224013dfe45fbb8f25d931bc	["*"]	\N	\N	2025-12-05 10:21:04	2025-12-05 10:21:04
+8	App\\Models\\User	1	API_Token	8f984f5b89193e063f3d511e73fb5680a149133f007bfdbb98640e85ca8797d7	["*"]	\N	\N	2025-12-05 10:40:59	2025-12-05 10:40:59
+9	App\\Models\\User	1	API_Token	dace96e1c8cbaf944a2bde6d2dc429eb30d99a4490c7486f91ff2bdbac0e2923	["*"]	\N	\N	2025-12-05 10:49:06	2025-12-05 10:49:06
+10	App\\Models\\User	1	API_Token	e52c1631498e5c97b5f28a477daaf4bc01a72261b7c2bc8d7c966fe46b1926f6	["*"]	\N	\N	2025-12-05 10:53:22	2025-12-05 10:53:22
+11	App\\Models\\User	1	API_Token	ef5c756ae66706bbc3d8a4639992d7a9ca5116b864ee8db0988df3c89986e867	["*"]	\N	\N	2025-12-05 10:56:01	2025-12-05 10:56:01
+12	App\\Models\\User	1	API_Token	9472de6e90fb823e0c102ae5900a34cfb4858b2267e26985fcc2b8ec207ecf9a	["*"]	\N	\N	2025-12-05 10:56:07	2025-12-05 10:56:07
+13	App\\Models\\User	1	API_Token	987dc06ac7c50c4743f5c0032fdad7987619758748f23c2aeeaa47c14a2ae73d	["*"]	\N	\N	2025-12-05 11:21:12	2025-12-05 11:21:12
+35	App\\Models\\User	1	API_Token	cb713995d83733e4dab8dc7aab3ddc4522d33b8a7708450db962230fbccc2d64	["*"]	2025-12-07 15:06:16	\N	2025-12-07 15:06:11	2025-12-07 15:06:16
+30	App\\Models\\User	2	API_Token	d1ce0a828d9734a6962161825394c6a17bb1a030db4ecd246eaecc2773001ef0	["*"]	2025-12-07 14:28:00	\N	2025-12-07 14:09:27	2025-12-07 14:28:00
+14	App\\Models\\User	1	API_Token	401b98a78ddbe87f11376ce41d7f871a0050950829e5b0c126e7c40a98fa895b	["*"]	2025-12-07 13:24:21	\N	2025-12-05 11:22:34	2025-12-07 13:24:21
+24	App\\Models\\User	1	API_Token	0a0f4f4c1844ca0bdd6f14da286d69a7c1148f69261ef28070f35c389fc3732c	["*"]	\N	\N	2025-12-07 13:59:13	2025-12-07 13:59:13
+25	App\\Models\\User	1	API_Token	6263ad29b4a188de87c35e1fc557e419c28bd440821435b05cb11ede53780f20	["*"]	\N	\N	2025-12-07 14:05:02	2025-12-07 14:05:02
+15	App\\Models\\User	1	API_Token	98f3daa6e2e9761fddd312806527b080cb3cd284445e4594bd0acfd9c4a2ff97	["*"]	\N	\N	2025-12-06 18:03:25	2025-12-06 18:03:25
+26	App\\Models\\User	1	API_Token	8d9bf2bc820bdd23672c229d897b7c00c541117a0ee4ed2e3453eeb9156e488a	["*"]	\N	\N	2025-12-07 14:05:21	2025-12-07 14:05:21
+27	App\\Models\\User	2	API_Token	409254a5f9cf1b7c4437a618ad94266293cfdd9204ac644c4a58527f2af4e04b	["*"]	\N	\N	2025-12-07 14:05:32	2025-12-07 14:05:32
+28	App\\Models\\User	2	API_Token	5fe29f385f9b459d8f566829645531ded67048f0a8907e0094fe88094063b5e2	["*"]	\N	\N	2025-12-07 14:05:51	2025-12-07 14:05:51
+29	App\\Models\\User	2	API_Token	b62397f1812637be275353bfb0c069ffe06bec0a4e05c0c8ce10c601b7aa7fef	["*"]	\N	\N	2025-12-07 14:06:03	2025-12-07 14:06:03
+23	App\\Models\\User	2	API_Token	37b8b42dae146c3268feab5fe70b00f24d94ddfe996e192daacb6a17fa638a84	["*"]	2025-12-07 14:10:17	\N	2025-12-07 13:41:59	2025-12-07 14:10:17
+16	App\\Models\\User	1	API_Token	5ca6bc4ada2f35a09a133c09f42ce4e860130b82e78ff56a8a4f1bfbbb3597a7	["*"]	2025-12-06 18:26:02	\N	2025-12-06 18:19:26	2025-12-06 18:26:02
+36	App\\Models\\User	2	API_Token	328d8835f8784cc54cf23425b7d5aebad5e4769d80998495317e86347ff0624e	["*"]	\N	\N	2025-12-08 14:47:02	2025-12-08 14:47:02
+40	App\\Models\\User	2	API_Token	d3a789ad46833bcafc59dd8136112762dfb434b49ffcece6a9680df2967d1cdf	["*"]	\N	\N	2025-12-09 00:37:36	2025-12-09 00:37:36
+41	App\\Models\\User	1	API_Token	192102804caa6eeae466e97e67b59b6952e24ac5e817a6af85ebc476aa9eab3b	["*"]	\N	\N	2025-12-09 05:26:56	2025-12-09 05:26:56
+42	App\\Models\\User	1	API_Token	68662a35a75882ba86fb92baf3ce6ee86ef269a8a96b41144fa9db6422a787fe	["*"]	\N	\N	2025-12-09 05:29:58	2025-12-09 05:29:58
+43	App\\Models\\User	1	API_Token	2cdf16142054f0688900c508971ff2d07416be42fad2c727fc0f60aac1e209ff	["*"]	\N	\N	2025-12-09 05:30:19	2025-12-09 05:30:19
+44	App\\Models\\User	1	API_Token	2c0b9b20923ae179d35bdc21e1f0fb10c91a6aa0a8489b0815dce841a59fb363	["*"]	\N	\N	2025-12-09 05:30:31	2025-12-09 05:30:31
+45	App\\Models\\User	1	API_Token	a937515a3fe5b49bc036937c073b8efb2b5797e3e226aa416afaf8f440e62520	["*"]	\N	\N	2025-12-09 05:30:49	2025-12-09 05:30:49
+52	App\\Models\\User	1	API_Token	8290e4c34ddd495dd63cded31fdf3bee360e9c35e0db2f2bd082cd007c8323d3	["*"]	2025-12-09 17:06:08	\N	2025-12-09 09:10:58	2025-12-09 17:06:08
+50	App\\Models\\User	1	API_Token	6a8f518ff858fd6ff611a6766a33449e4adf27005f26cbc29c10f01a4939c01a	["*"]	2025-12-09 09:13:12	\N	2025-12-09 06:58:01	2025-12-09 09:13:12
+39	App\\Models\\User	1	API_Token	a0e689049d78f18cb05cb66575728466bf99a7daf31b3f519334785b78c58ea8	["*"]	2025-12-09 05:48:14	\N	2025-12-08 17:37:29	2025-12-09 05:48:14
+51	App\\Models\\User	1	API_Token	3c402c8913028afef1686755c3ca0b3910c407a29555752a7f8c09aac0a845ef	["*"]	\N	\N	2025-12-09 09:10:55	2025-12-09 09:10:55
+53	App\\Models\\User	1	API_Token	0acd4e49c6cebb006103a48d2921c7c46d00047f02716019712c7854b397667b	["*"]	2025-12-09 09:15:59	\N	2025-12-09 09:13:22	2025-12-09 09:15:59
+55	App\\Models\\User	1	API_Token	9817314f8bc75407af668c4274a67eff05332196901db793e0795267519b3a22	["*"]	2025-12-09 11:21:25	\N	2025-12-09 11:21:08	2025-12-09 11:21:25
+54	App\\Models\\User	1	API_Token	301b0bd0af2bd5c2041db7fed80535c4704da5aaabc4a585a66505af56522a71	["*"]	\N	\N	2025-12-09 11:20:54	2025-12-09 11:20:54
+59	App\\Models\\User	1	API_Token	78a37867a7bc344c996d76a5a0c6380c2666601d012852a9cb7788e0159843e4	["*"]	\N	\N	2025-12-09 12:55:45	2025-12-09 12:55:45
+60	App\\Models\\User	1	API_Token	aa6b95366b9692855fc2b6d5399436b46583bb0364b7ee599f36c375fbc11905	["*"]	2025-12-09 12:59:47	\N	2025-12-09 12:59:35	2025-12-09 12:59:47
+61	App\\Models\\User	1	API_Token	501ea1084de056926cef308c65fc7ee3bf15d67ded2fe6a1f2b03b60182796fc	["*"]	\N	\N	2025-12-09 14:00:46	2025-12-09 14:00:46
+62	App\\Models\\User	1	API_Token	416312a5c8189508eb88e7d3fd94a06f11ac9876f247b25cd134d36ef1c28689	["*"]	\N	\N	2025-12-09 14:18:12	2025-12-09 14:18:12
+63	App\\Models\\User	1	API_Token	8d0b01c5cde36a07e5bf9608b41f5f3358bbdc02280146ba8dd4d150efe3df96	["*"]	2025-12-09 14:50:42	\N	2025-12-09 14:50:07	2025-12-09 14:50:42
+64	App\\Models\\User	1	API_Token	6b2f41b5a997c20010db02a7748e630a4cfe68f6999825f0e2286c834340d2d2	["*"]	\N	\N	2025-12-09 14:56:50	2025-12-09 14:56:50
+65	App\\Models\\User	1	API_Token	e491ad554425086aece13e67b58c233948bbe80239e07211c65c70fcad74d69c	["*"]	\N	\N	2025-12-09 14:58:17	2025-12-09 14:58:17
+67	App\\Models\\User	1	API_Token	a29f76edc12d4950aeda1abf7533b5af0f07bf814cdfa04abee54a4a993923a5	["*"]	2025-12-09 15:16:20	\N	2025-12-09 15:16:16	2025-12-09 15:16:20
+76	App\\Models\\User	1	API_Token	37bdaac44c860e93968321ca35f618fe84134d92a59feb17abcebc6460455510	["*"]	\N	\N	2025-12-10 08:52:14	2025-12-10 08:52:14
+77	App\\Models\\User	1	API_Token	86d270b3401173aad515d4aa204cfd063295ea4050c040592382d76d3e76752d	["*"]	\N	\N	2025-12-10 08:52:16	2025-12-10 08:52:16
+78	App\\Models\\User	1	API_Token	0e24decb02bafbb4dc2a5b77a4a09f3bca770c26df9a58ad8df8ea6c3de9f94e	["*"]	\N	\N	2025-12-10 08:52:39	2025-12-10 08:52:39
+68	App\\Models\\User	1	API_Token	6b3072736f2b258084e44adcbf7b18d218539e68c175ad6ee17bd0a6822d81f6	["*"]	2025-12-09 16:29:10	\N	2025-12-09 16:27:30	2025-12-09 16:29:10
+70	App\\Models\\User	1	API_Token	b6355e92181e6aa2329c095169e4f29dd9f7db321ff84c3ca51d9698b415fdce	["*"]	\N	\N	2025-12-09 16:38:12	2025-12-09 16:38:12
+69	App\\Models\\User	1	API_Token	3516976c5d58513ef867b70f04be1fe26a59bcb8816c9f0d2b57249c1ee78e67	["*"]	2025-12-09 16:41:21	\N	2025-12-09 16:28:58	2025-12-09 16:41:21
+75	App\\Models\\User	1	API_Token	032f181c052bc4f02724e1eeacc973ca008c8088217adcd4456e32aea4b4b4f1	["*"]	2025-12-10 08:52:54	\N	2025-12-09 17:07:31	2025-12-10 08:52:54
+92	App\\Models\\User	1	API_Token	365f5b4335bb2506925c756e233eeac51f8e881af1bd0e2f2ab6c11cf271f6b8	["*"]	\N	\N	2025-12-10 09:34:00	2025-12-10 09:34:00
+73	App\\Models\\User	1	API_Token	5791b4d47c9220b976a1b724a3235cc284032c3fa49a676b56cd3d08493cb206	["*"]	\N	\N	2025-12-09 17:06:13	2025-12-09 17:06:13
+74	App\\Models\\User	1	API_Token	f250e3b13ce6c86914ed73f5ab46d31a35c4613db473a9081adb18624ad955cf	["*"]	\N	\N	2025-12-09 17:06:16	2025-12-09 17:06:16
+82	App\\Models\\User	1	API_Token	0cef9fbb359c79c157599cae036d4d208c886dad3bcb8473e8eafcda6aaac9d4	["*"]	\N	\N	2025-12-10 08:57:11	2025-12-10 08:57:11
+83	App\\Models\\User	1	API_Token	609f66db2730090a682883a8e5f4bfc53b23d7d1ce9f9d452d9408ec879dedea	["*"]	\N	\N	2025-12-10 08:57:37	2025-12-10 08:57:37
+84	App\\Models\\User	1	API_Token	38367776fa39c46cee40a670faa55f5176f4a1be64e3f85b1186b25228b43e4a	["*"]	\N	\N	2025-12-10 08:57:57	2025-12-10 08:57:57
+85	App\\Models\\User	1	API_Token	f95f7c6aed3b18c2b73717fa9b7f914f8d06310052eed8340363f942ff58967f	["*"]	\N	\N	2025-12-10 08:58:08	2025-12-10 08:58:08
+86	App\\Models\\User	1	API_Token	05069ddbae8a28fd1ec1de025677389f3ace6531defc92ac70c534047786008e	["*"]	\N	\N	2025-12-10 09:04:06	2025-12-10 09:04:06
+87	App\\Models\\User	1	API_Token	f1df6b41ae8b8034614bf69ae83eb5ccc4a0aebdbdabd60ee6ecd582cda90a05	["*"]	\N	\N	2025-12-10 09:04:40	2025-12-10 09:04:40
+88	App\\Models\\User	1	API_Token	666c8da00594c237e9c3b7c6e08550acbef58b2687c41acb54cdc9046c5f1c5d	["*"]	\N	\N	2025-12-10 09:05:22	2025-12-10 09:05:22
+89	App\\Models\\User	1	API_Token	16ba62774a3f661151ac76eade7a6cedc77b696723d36b7808813e37a3237f90	["*"]	2025-12-10 09:06:58	\N	2025-12-10 09:05:52	2025-12-10 09:06:58
+\.
+
+
+--
+-- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: root
+--
+
+COPY public.roles (id, name, created_at, updated_at) FROM stdin;
+1	Admin	2025-12-05 08:12:56	2025-12-05 08:12:56
+2	Tiktok content creator	2025-12-05 08:16:42	2025-12-05 08:16:42
+3	Youtube content creator	2025-12-05 08:16:52	2025-12-05 08:16:52
+\.
+
+
+--
+-- Data for Name: sessions; Type: TABLE DATA; Schema: public; Owner: root
+--
+
+COPY public.sessions (id, user_id, ip_address, user_agent, payload, last_activity) FROM stdin;
+3XWpqs9R5ywXnbfzYUDSg18A5SlSgWGFpIwaQP7y	\N	127.0.0.1	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36	YTozOntzOjY6Il90b2tlbiI7czo0MDoiRTNRVFF2azBreVFIUTNvbGs4SmdvQ2gyRlhRNllEQ2puVllpckluUiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==	1764780518
+L1hM0SgPzvUXRKJ86a7z1eWC7trdM9fvq3lWP2wL	\N	127.0.0.1	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36	YTozOntzOjY6Il90b2tlbiI7czo0MDoiUTE2SjZ1Q2M1REpoZkNwR0FFSnQxUWxscEZkNDd3QmRNbUxLaHhIMSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==	1764780676
+wZRemWjQLv5z0sm9z3OXU9vf65R35JgLMNtgRJ3A	\N	127.0.0.1	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36	YTozOntzOjY6Il90b2tlbiI7czo0MDoiVzNLcHVmRFBBVk1OMU5HN0lHTzJzS3hmR0FYcTdPbzRJdnNxZ2d1ViI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==	1765042629
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: root
+--
+
+COPY public.users (id, name, email, email_verified_at, password, remember_token, created_at, updated_at, username, phone, role_id) FROM stdin;
+4	Nguyễn Văn Thanh	nguyenvanthanh@gmail.com	\N	$2y$12$/hMX17J31fHG7jkf6lMlRu4PPJ/WsD1H.nV4JwtZEswTpjBYeVd.K	\N	2025-12-05 17:05:48	2025-12-05 17:05:48	thanhnv	0982149801	\N
+3	Đỗ Trí Dũng	dotridung@gmail.com	\N	$2y$12$ml5V8wXi/8FRh4Iy3yFo.uKalEN4N51I9NuqDpVhcfOqVU7cMOUyG	\N	2025-12-04 09:48:57	2025-12-07 15:06:04	dungtd	0988179021	3
+2	Nguyễn Thanh Hồng	nguyenthanhhong@gmail.com	\N	$2y$12$Ddpui39RhXLjwY2yGWUqIO401ktkKGZz4dbjDI1wuwOXbEl1cANE2	40|1MUIzpp5NPU27Dw8c27tUY2rxBebuKHVQh1xT1qT3687129e	2025-12-04 09:48:20	2025-12-09 00:37:36	hongnt	0988178245	2
+1	Nguyễn Kim Điền	nguyenkimdien02@gmail.com	\N	$2y$12$hzbyfgsAliP/KIWmGyVAAu8yk7SiSiO1AONGxkIHKQmXT3xWXxCcC	92|YvKPWNOF7pcwTLIDLuNRlk6KkW6SIRudykW4oVH11331fd2a	2025-12-04 08:30:29	2025-12-10 09:34:00	diennk	0988162753	1
+\.
+
+
+--
+-- Name: failed_jobs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
+--
+
+SELECT pg_catalog.setval('public.failed_jobs_id_seq', 1, false);
+
+
+--
+-- Name: jobs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
+--
+
+SELECT pg_catalog.setval('public.jobs_id_seq', 1, false);
+
+
+--
+-- Name: menu_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
+--
+
+SELECT pg_catalog.setval('public.menu_id_seq', 12, true);
+
+
+--
+-- Name: menu_role_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
+--
+
+SELECT pg_catalog.setval('public.menu_role_id_seq', 15, true);
+
+
+--
+-- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
+--
+
+SELECT pg_catalog.setval('public.migrations_id_seq', 16, true);
+
+
+--
+-- Name: personal_access_tokens_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
+--
+
+SELECT pg_catalog.setval('public.personal_access_tokens_id_seq', 92, true);
+
+
+--
+-- Name: roles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
+--
+
+SELECT pg_catalog.setval('public.roles_id_seq', 3, true);
+
+
+--
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
+--
+
+SELECT pg_catalog.setval('public.users_id_seq', 4, true);
+
+
+--
+-- Name: cache_locks cache_locks_pkey; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.cache_locks
+    ADD CONSTRAINT cache_locks_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: cache cache_pkey; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.cache
+    ADD CONSTRAINT cache_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: failed_jobs failed_jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.failed_jobs
+    ADD CONSTRAINT failed_jobs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: failed_jobs failed_jobs_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.failed_jobs
+    ADD CONSTRAINT failed_jobs_uuid_unique UNIQUE (uuid);
+
+
+--
+-- Name: job_batches job_batches_pkey; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.job_batches
+    ADD CONSTRAINT job_batches_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: jobs jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.jobs
+    ADD CONSTRAINT jobs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: menu menu_name_unique; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.menu
+    ADD CONSTRAINT menu_name_unique UNIQUE (name);
+
+
+--
+-- Name: menu menu_pkey; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.menu
+    ADD CONSTRAINT menu_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: menu_role menu_role_pkey; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.menu_role
+    ADD CONSTRAINT menu_role_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: migrations migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.migrations
+    ADD CONSTRAINT migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: password_reset_tokens password_reset_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.password_reset_tokens
+    ADD CONSTRAINT password_reset_tokens_pkey PRIMARY KEY (email);
+
+
+--
+-- Name: personal_access_tokens personal_access_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.personal_access_tokens
+    ADD CONSTRAINT personal_access_tokens_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: personal_access_tokens personal_access_tokens_token_unique; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.personal_access_tokens
+    ADD CONSTRAINT personal_access_tokens_token_unique UNIQUE (token);
+
+
+--
+-- Name: roles roles_name_unique; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.roles
+    ADD CONSTRAINT roles_name_unique UNIQUE (name);
+
+
+--
+-- Name: roles roles_pkey; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.roles
+    ADD CONSTRAINT roles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sessions sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.sessions
+    ADD CONSTRAINT sessions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_email_unique; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_email_unique UNIQUE (email);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: jobs_queue_index; Type: INDEX; Schema: public; Owner: root
+--
+
+CREATE INDEX jobs_queue_index ON public.jobs USING btree (queue);
+
+
+--
+-- Name: personal_access_tokens_expires_at_index; Type: INDEX; Schema: public; Owner: root
+--
+
+CREATE INDEX personal_access_tokens_expires_at_index ON public.personal_access_tokens USING btree (expires_at);
+
+
+--
+-- Name: personal_access_tokens_tokenable_type_tokenable_id_index; Type: INDEX; Schema: public; Owner: root
+--
+
+CREATE INDEX personal_access_tokens_tokenable_type_tokenable_id_index ON public.personal_access_tokens USING btree (tokenable_type, tokenable_id);
+
+
+--
+-- Name: sessions_last_activity_index; Type: INDEX; Schema: public; Owner: root
+--
+
+CREATE INDEX sessions_last_activity_index ON public.sessions USING btree (last_activity);
+
+
+--
+-- Name: sessions_user_id_index; Type: INDEX; Schema: public; Owner: root
+--
+
+CREATE INDEX sessions_user_id_index ON public.sessions USING btree (user_id);
+
+
+--
+-- Name: menu_role menu_role_menu_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.menu_role
+    ADD CONSTRAINT menu_role_menu_id_foreign FOREIGN KEY (menu_id) REFERENCES public.menu(id) ON DELETE CASCADE;
+
+
+--
+-- Name: menu_role menu_role_role_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.menu_role
+    ADD CONSTRAINT menu_role_role_id_foreign FOREIGN KEY (role_id) REFERENCES public.roles(id) ON DELETE CASCADE;
+
+
+--
+-- Name: users users_role_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_role_id_foreign FOREIGN KEY (role_id) REFERENCES public.roles(id) ON DELETE CASCADE;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
