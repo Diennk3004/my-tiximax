@@ -34,7 +34,7 @@ const AdminRoutes = {
           element: <RoleForm />
         },
         {
-          path: "edit/:id",
+          path: "edit/:role_id",
           element: <RoleForm />
         }
       ]
@@ -51,7 +51,7 @@ const AdminRoutes = {
           element: <UserForm />
         },
         {
-          path: "edit/:id",
+          path: "edit/:user_id",
           element: <UserForm />
         }
       ]
@@ -68,7 +68,7 @@ const AdminRoutes = {
           element: <MenuForm />
         },
         {
-          path: "edit/:id",
+          path: "edit/:menu_id",
           element: <MenuForm />
         }
       ]

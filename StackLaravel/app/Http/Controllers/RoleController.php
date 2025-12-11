@@ -14,31 +14,72 @@ class RoleController extends Controller
             $data["roles"]=$roles;     
             return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
     }
-    public function create(Request $request){        
+    public function getDetail(string $id=null){
+            $checked=true;
+            $message="";
+            $data=array();   
+            if(!$id){
+                $checked=false;
+                $message="Item not founded";
+            }    
+            if($checked===true){
+                $role=Role::find($id);
+                $data["role"]=$role;     
+            }            
+            return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
+    }
+    public function save(Request $request,string $id=null){        
         $checked=true;
         $message="";
         $data=array();
         if($request->isMethod("post")){
-            $role=new Role;
-            $role->name=$request->name;
-            $role->save();
-            $data["role"]=$role;
+            $role=null;
+            if($id){                            
+                $role=Role::find($id);
+                if(!$role){
+                    $checked=false;
+                    $message="Item not founded";
+                }                
+            }else{                
+                $role=new Role;
+                if(!$request->name){
+                    $checked=false;
+                    $message="Name is empty";
+                }                
+            }                        
+            if($checked==true){
+                if($request->name){
+                    $role->name=$request->name;
+                }                
+                $role->save();
+                $data["role"]=$role;
+                if($id){
+                    $message="Update item successfully";
+                }     else{
+                    $message="Create item successfully";        
+                }                                   
+            }                                  
         }
         return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
-    }
-    public function update(string $id,Request $request){
-        $checked=true;
-        $message="";
+    }    
+    public function delete(string $id,Request $request){      
         $data=array();
-        if($request->isMethod("post")){
-            $role=Role::find($id);
-            if(!role){
-                $checked=false;
-                $message="Role not found";
-            }else{
-                $role->name=$request->name;
-                $role->save();
-            }        
+        $message="";
+        $checked=true;
+        if($request->isMethod("put")){
+            if(!$id){
+                $checked=false;    
+                $message="Empty deleted id";            
+            }             
+            if($checked===true){
+                $role=Role::find($id);                      
+                if(!$role){
+                    $checked=false;
+                    $message="Item not found";
+                }else{                                     
+                    $role::destroy($id);                    
+                }     
+            }
         }
         return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
     }
