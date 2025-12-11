@@ -2,18 +2,56 @@ import { AxiosService } from "@/utils";
 import { Table, type TableProps, Card } from "antd";
 import clsx from "clsx";
 import React from "react";
+import { PlusOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
+import { AppButton } from "@/components";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 interface DataType {
   key: string;
+  id: number;
+  username: string;
   name: string;
+  phone: string;
+  email: string;
 }
+const Toast = Swal.mixin({
+  toast: true,
+  position: "bottom-start",
+  showConfirmButton: false,
+  timer: 8000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  }
+});
 const UserList = () => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const columns: TableProps<DataType>["columns"] = [
+    {
+      title: "Username",
+      dataIndex: "username",
+      key: "username",
+      render: (text) => <span>{text}</span>
+    },
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      render: (text) => <span>{text}</span>
+    },
+    {
+      title: "Phone",
+      dataIndex: "phone",
+      key: "phone",
+      render: (text) => <span>{text}</span>
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
       render: (text) => <span>{text}</span>
     },
     {
@@ -42,9 +80,19 @@ const UserList = () => {
     };
     loadUserList();
   }, []);
+  const handleNewForm = () => {
+    navigate("/admin/user/add");
+  };
   return (
     <React.Fragment>
-      <Card title={<span className={clsx(["text-3xl"])}>{t("Users")}</span>}>
+      <Card
+        title={
+          <div className={clsx(["flex", "justify-between"])}>
+            <span className={clsx(["text-3xl"])}>{t("Users")}</span>
+            <AppButton lblCtrl={t("New")} iconCtrl={<PlusOutlined />} onClickForm={handleNewForm} />
+          </div>
+        }
+      >
         <Table<DataType> columns={columns} dataSource={userList} />
       </Card>
     </React.Fragment>
