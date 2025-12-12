@@ -38,12 +38,14 @@ class UserController extends Controller
                         $data["token"]=$token;
                         $user->remember_token=$token;
                         $user->save();
-                        $user=Role::find($user->role_id);
-                        $user->role_name=$user ? $user->name : "";
-                        $query=DB::table("menu")->join("menu_role","menu.id","=","menu_role.menu_id")->join("roles","menu_role.role_id","=","roles.id");
-                        $query->where("roles.id",$user->role_id);
-                        $menuList=$query->select("menu.id","menu.name","menu.url")->get(); 
-                        $user["menu"]=$menuList;                   
+                        $role=Role::find($user->role_id);                        
+                        if($role){                                                 
+                            $user["role_name"]=$role->name ? $role->name : "";
+                            $query=DB::table("menu")->join("menu_role","menu.id","=","menu_role.menu_id");
+                            $query->where("menu_role.role_id",$role->id);
+                            $menuList=$query->select("menu.id","menu.name","menu.url")->get();                       
+                            $user["menu"]=$menuList;                   
+                        }                        
                         $data["user"]=$user;   
                         $message="Login successfully";      
                     }                                                                   
@@ -84,8 +86,28 @@ class UserController extends Controller
         $data=array();
         if($request->isMethod("post")){
             $user=null;
+            $password=$request->password;
+            $password_confirmed=$request->password_confirmed;
             if($id){                
                 $user=User::find($id);
+                if($password && $password_confirmed){
+                    if (strlen($password) >= 5 && strlen($password_confirmed) >= 5) {
+                        if ($password !== $password_confirmed) {
+                            $message="Password confirmed is not matched to password";
+                            $checked = false;
+                        }
+                    } 
+                    else {
+                        if (strlen($password) < 5) {
+                            $message="Password length must be greater than 6 characters";
+                            $checked = false;
+                        }
+                        if (strlen($password_confirmed) < 6) {
+                            $message="Password confirmed length must be greater than 6 characters";
+                            $checked = false;
+                        }
+                    }                    
+                }
                 if(!$user){
                     $checked=false;
                     $message="Item not found";
@@ -100,19 +122,33 @@ class UserController extends Controller
                     $checked=false;
                     $message="Username is required";
                 }
-                if(!$request->password || !$request->password_confirmed){
-                    if(!$request->password){
+                if($password && $password_confirmed){
+                    if (strlen($password) >= 5 && strlen($password_confirmed) >= 5) {
+                        if ($password !== $password_confirmed) {
+                            $message="Password confirmed is not matched to password";
+                            $checked = false;
+                        }
+                    } 
+                    else {
+                        if (strlen($password) < 5) {
+                            $message="Password length must be greater than 6 characters";
+                            $checked = false;
+                        }
+                        if (strlen($password_confirmed) < 6) {
+                            $message="Password confirmed length must be greater than 6 characters";
+                            $checked = false;
+                        }
+                    }                    
+                }else{
+                    if(!$password){
                         $checked=false;
                         $message="Password is required";
                     }
-                    if(!$request->password_confirmed){
+                    if(!$password_confirmed){
                         $checked=false;
                         $message="Password confirmed is required";
                     }
-                }else{
-
-                }
-                
+                }                
                 if(!$request->email){
                     $checked=false;
                     $message="Email is required";
@@ -128,6 +164,9 @@ class UserController extends Controller
                 }  
                 if($request->username){
                     $user->username=$request->username;
+                } 
+                if($request->password){
+                    $user->password=$request->password;
                 }  
                 if($request->email){
                     $user->email=$request->email;
@@ -139,7 +178,7 @@ class UserController extends Controller
                 $data["user"]=$user; 
                 if($id){
                     $message="Update item successfully";
-                }     else{
+                }else{
                     $message="Create item successfully";        
                 }                  
             }                                  
@@ -178,5 +217,27 @@ class UserController extends Controller
             $users=User::all();
             $data["users"]=$users;                    
             return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
+    }
+    public function delete(Request $request,string $id=null){      
+        $data=array();
+        $message="";
+        $checked=true;
+        if($request->isMethod("put")){
+            if(!$id){
+                $checked=false;    
+                $message="Id is required";            
+            }             
+            if($checked===true){
+                $user=User::find($id);                      
+                if(!$user){
+                    $checked=false;
+                    $message="Item not found";
+                }else{                                     
+                    $user::destroy($id);  
+                    $message="Delete successfully";                  
+                }     
+            }
+        }
+        return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
     }
 }

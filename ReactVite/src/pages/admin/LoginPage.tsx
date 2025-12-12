@@ -47,7 +47,7 @@ const LoginPage = () => {
             document.cookie = `${import.meta.env.VITE_ACCESS_TOKEN_PREFIX}=${token}; expires=${getExpired(30)}; path=/;`;
             Toast.fire({
               icon: "success",
-              title: t("Login successfully")
+              title: t(message)
             });
             setTimeout(() => {
               dispatch(loginAction(user));
@@ -57,7 +57,7 @@ const LoginPage = () => {
           document.cookie = `${import.meta.env.VITE_ACCESS_TOKEN_PREFIX}=token; expires=${getExpired(-100)}; path=/;`;
           Toast.fire({
             icon: "error",
-            title: message
+            title: t(message)
           });
         }
       })
@@ -65,7 +65,7 @@ const LoginPage = () => {
         document.cookie = `${import.meta.env.VITE_ACCESS_TOKEN_PREFIX}=token; expires=${getExpired(-100)}; path=/;`;
         Toast.fire({
           icon: "error",
-          title: t("Error system")
+          title: t(err.data.message)
         });
       });
   };

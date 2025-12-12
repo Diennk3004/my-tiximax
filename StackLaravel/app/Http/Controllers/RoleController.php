@@ -62,7 +62,7 @@ class RoleController extends Controller
         }
         return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
     }    
-    public function delete(string $id,Request $request){      
+    public function delete(Request $request,string $id=null){      
         $data=array();
         $message="";
         $checked=true;

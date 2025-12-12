@@ -27,9 +27,6 @@ const Toast = Swal.mixin({
   }
 });
 const UserList = () => {
-  const navigate = useNavigate();
-  const { t } = useTranslation();
-  const [userList, setUserList] = React.useState<DataType[]>([]);
   const columns: TableProps<DataType>["columns"] = [
     {
       title: "Username",
@@ -70,6 +67,9 @@ const UserList = () => {
       )
     }
   ];
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const [userList, setUserList] = React.useState<DataType[]>([]);
   const loadUserList = () => {
     AxiosService()
       .get("/auth/user/list", { headers: { isShowLoading: true } })

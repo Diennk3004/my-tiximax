@@ -16,7 +16,7 @@ class MenuController extends Controller
             return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
              
     }
-    public function getDetail(string $id){
+    public function getDetail(string $id=null){
             $checked=true;
             $message="";
             $data=array();   
@@ -30,7 +30,7 @@ class MenuController extends Controller
             }            
             return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
     }
-    public function save(Request $request,string $id){        
+    public function save(Request $request,string $id=null){        
         $checked=true;
         $message="";
         $data=array();
@@ -70,5 +70,27 @@ class MenuController extends Controller
             }                                  
         }
         return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
-    }    
+    }   
+    public function delete(Request $request,string $id=null){      
+        $data=array();
+        $message="";
+        $checked=true;
+        if($request->isMethod("put")){
+            if(!$id){
+                $checked=false;    
+                $message="Id is required";            
+            }             
+            if($checked===true){
+                $menu=Menu::find($id);                      
+                if(!$menu){
+                    $checked=false;
+                    $message="Item not found";
+                }else{                                     
+                    $menu::destroy($id);  
+                    $message="Delete successfully";                  
+                }     
+            }
+        }
+        return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
+    } 
 }

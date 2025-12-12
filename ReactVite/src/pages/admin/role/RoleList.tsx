@@ -24,9 +24,6 @@ const Toast = Swal.mixin({
   }
 });
 const RoleList = () => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const [roleList, setRoleList] = React.useState<DataType[]>([]);
   const columns: TableProps<DataType>["columns"] = [
     {
       title: "Name",
@@ -49,6 +46,9 @@ const RoleList = () => {
       )
     }
   ];
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [roleList, setRoleList] = React.useState<DataType[]>([]);
   const loadRoleList = () => {
     AxiosService()
       .get("/auth/role/list", { headers: { isShowLoading: true } })

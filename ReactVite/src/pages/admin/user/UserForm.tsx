@@ -126,6 +126,7 @@ const UserForm = () => {
           {
             username: username ? username.trim() : "",
             password: password ? password.trim() : "",
+            password_confirmed: password_confirmed ? password_confirmed.trim() : "",
             name: name ? name.trim() : "",
             email: email ? email.trim() : "",
             phone: phone ? phone.trim() : ""
