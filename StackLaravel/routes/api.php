@@ -14,20 +14,22 @@ Route::prefix('auth')->group(function () {
             Route::get("/list",[UserController::class,"getList"]);  
             Route::get("/detail/{id?}",[UserController::class,"getDetail"]);      
             Route::post("/save/{id?}",[UserController::class,"save"]);
+            Route::put("/delete/{id?}",[UserController::class,"delete"]);      
         });
         Route::prefix("role")->group(function(){
             Route::get("/list",[RoleController::class,"getList"]);
             Route::get("/detail/{id?}",[RoleController::class,"getDetail"]);
             Route::post("/save/{id?}",[RoleController::class,"save"]);
-            Route::put("/delete/{id}",[RoleController::class,"delete"]);      
+            Route::put("/delete/{id?}",[RoleController::class,"delete"]);      
         });        
         Route::prefix("menu")->group(function(){
             Route::get("/list",[MenuController::class,"getList"]);
             Route::get("/detail/{id?}",[MenuController::class,"getDetail"]);
-            Route::post("/save/{id?}",[MenuController::class,"save"]);            
+            Route::post("/save/{id?}",[MenuController::class,"save"]);
+            Route::put("/delete/{id?}",[MenuController::class,"delete"]);             
         });
         Route::prefix("menu-role")->group(function(){
-            Route::post("/assign-menu-to-role/{task}/{id?}",[MenuRoleController::class,"assignMenuToRole"]);
+            Route::post("/assign/{id?}",[MenuRoleController::class,"assignMenuToRole"]);
         });        
     });
 });
