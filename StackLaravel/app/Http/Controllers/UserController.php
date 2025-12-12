@@ -173,6 +173,9 @@ class UserController extends Controller
                 }  
                 if($request->phone){
                     $user->phone=$request->phone;
+                } 
+                if($request->role_id){
+                    $user->role_id=$request->role_id;
                 }                                 
                 $user->save();
                 $data["user"]=$user; 
@@ -214,7 +217,10 @@ class UserController extends Controller
             $checked=true;
             $message="";
             $data=array();       
-            $users=User::all();
+            $query=DB::table("users");
+            $query->leftJoin("roles","users.role_id","=","roles.id");
+            $query->select("users.id","users.username","users.name","users.email","users.phone","roles.name as role_name");
+            $users=$query->get();
             $data["users"]=$users;                    
             return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
     }

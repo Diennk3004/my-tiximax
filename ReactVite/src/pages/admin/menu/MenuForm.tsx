@@ -1,15 +1,23 @@
 import { AppButton } from "@/components";
-import Swal from "sweetalert2";
-import React from "react";
 import { AxiosService } from "@/utils";
 import { RollbackOutlined } from "@ant-design/icons";
-import { Card, Col, Form, Input, Row, type FormProps, Button } from "antd";
+import { Button, Card, Col, Form, Input, Row, Select, type FormProps } from "antd";
 import clsx from "clsx";
+import { produce } from "immer";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 type FieldType = {
   menu_name?: string;
   menu_url?: string;
+  role_ids?: string;
+};
+type IRole = {
+  label: string;
+  value: string;
+  id: number;
+  name: string;
 };
 const Toast = Swal.mixin({
   toast: true,
@@ -27,11 +35,12 @@ const MenuForm = () => {
   const { t } = useTranslation();
   const { menu_id } = useParams();
   const [frm] = Form.useForm();
+  const [roleList, setRoleList] = React.useState<IRole[]>([]);
   const handleBack = () => {
     navigate("/admin/menu/list");
   };
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    const { menu_name, menu_url } = values;
+    const { menu_name, menu_url, role_ids } = values;
     let actionUrl: string = "";
     if (menu_id) {
       actionUrl = "/auth/menu/save/" + menu_id;
@@ -39,7 +48,7 @@ const MenuForm = () => {
       actionUrl = "/auth/menu/save";
     }
     AxiosService()
-      .post(actionUrl, { name: menu_name ? menu_name.trim() : "", url: menu_url ? menu_url.trim() : "" }, { headers: { isShowLoading: true } })
+      .post(actionUrl, { name: menu_name ? menu_name.trim() : "", url: menu_url ? menu_url.trim() : "", role_ids: role_ids ? role_ids : "" }, { headers: { isShowLoading: true } })
       .then((response: any) => {
         const { checked, message } = response.data;
         if (checked === true) {
@@ -90,6 +99,38 @@ const MenuForm = () => {
     };
     loadMenuItem();
   }, [menu_id]);
+  React.useEffect(() => {
+    const loadRoleList = () => {
+      AxiosService()
+        .get("/auth/role/list", { headers: { isShowLoading: true } })
+        .then((response: any) => {
+          const { data, checked, message } = response.data;
+          if (checked && data && data.roles && data.roles.length > 0) {
+            const list: IRole[] = data.roles;
+            list.unshift({ id: 0, name: "---Please select role---", label: "", value: "" });
+            const nextState = produce(list, (draft) => {
+              draft.forEach((item: IRole) => {
+                item.label = item.name.toString().trim();
+                item.value = item.id.toString().trim();
+              });
+            });
+            setRoleList(nextState);
+          } else {
+            Toast.fire({
+              icon: "error",
+              title: t(message)
+            });
+          }
+        })
+        .catch((err: any) => {
+          Toast.fire({
+            icon: "error",
+            title: err.data && err.data.message ? err.data.message : ""
+          });
+        });
+    };
+    loadRoleList();
+  }, []);
   return (
     <Form name="basic" onFinish={onFinish} layout="vertical" form={frm}>
       <Card
@@ -111,6 +152,14 @@ const MenuForm = () => {
               <Input />
             </Form.Item>
           </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item<FieldType> label={t("Roles")} name="role_ids" rules={[{ required: true }]}>
+              <Select mode="multiple" allowClear className={clsx(["w-full"])} placeholder="Please select" options={roleList} />
+            </Form.Item>
+          </Col>
+          <Col span={12}></Col>
         </Row>
         <Row>
           <Col span={24}>

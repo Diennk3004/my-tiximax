@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Menu;
+use Illuminate\Support\Facades\DB;
 class MenuController extends Controller
 {
     public function getList(Request $request){
@@ -11,7 +12,8 @@ class MenuController extends Controller
             $checked=true;
             $message="";
             $data=array();       
-            $menus=Menu::all();
+            $query=DB::table("menu");
+            $menus=$query->get();
             $data["menus"]=$menus;     
             return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
              
@@ -59,9 +61,30 @@ class MenuController extends Controller
                 }
                 if($request->url){
                     $menu->url=$request->url;
-                }                
+                }                                
                 $menu->save();
                 $data["menu"]=$menu; 
+                if($request->role_ids && is_array($request->role_ids)){
+                    $roleIdList=$request->role_ids;
+                    if($id){
+                        $delete=DB::table("menu_role")->where("menu_id","=",$id)->delete();
+                        foreach($roleIdList as $key => $val ){
+                           $menuRole=new MenuRole;
+                           $menuRole->menu_id=$menu->id;
+                           $menuRole->role_id=$val;
+                        }
+                    }else{
+                        foreach($roleIdList as $key => $val ){
+                           $menuRole=new MenuRole;
+                           $menuRole->menu_id=$menu->id;
+                           $menuRole->role_id=$val;
+                        }
+                    }                    
+                }else{
+                    if($id){
+                        $delete=DB::table("menu_role")->where("menu_id","=",$id)->delete();
+                    }
+                }
                 if($id){
                     $message="Update item successfully";
                 }     else{

@@ -3,10 +3,11 @@ import Swal from "sweetalert2";
 import React from "react";
 import { AxiosService } from "@/utils";
 import { RollbackOutlined } from "@ant-design/icons";
-import { Card, Col, Form, Input, Row, type FormProps, Button } from "antd";
+import { Card, Col, Form, Input, Row, type FormProps, Button, Select } from "antd";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
+import { produce } from "immer";
 type FieldType = {
   name?: string;
   email?: string;
@@ -14,6 +15,13 @@ type FieldType = {
   password?: string;
   password_confirmed?: string;
   phone?: string;
+  role_id?: number;
+};
+type IRole = {
+  label: string;
+  value: string;
+  id: number;
+  name: string;
 };
 const Toast = Swal.mixin({
   toast: true,
@@ -31,11 +39,12 @@ const UserForm = () => {
   const { t } = useTranslation();
   const { user_id } = useParams();
   const [frmSave] = Form.useForm();
+  const [roleList, setRoleList] = React.useState<IRole[]>([]);
   const handleBack = () => {
     navigate("/admin/user/list");
   };
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    const { username, name, email, phone, password, password_confirmed } = values;
+    const { username, name, email, phone, password, password_confirmed, role_id } = values;
     let checked: boolean = true;
     if (user_id) {
       if (password && password_confirmed) {
@@ -129,7 +138,8 @@ const UserForm = () => {
             password_confirmed: password_confirmed ? password_confirmed.trim() : "",
             name: name ? name.trim() : "",
             email: email ? email.trim() : "",
-            phone: phone ? phone.trim() : ""
+            phone: phone ? phone.trim() : "",
+            role_id: role_id ? role_id : null
           },
           { headers: { isShowLoading: true } }
         )
@@ -164,11 +174,12 @@ const UserForm = () => {
           .then((response: any) => {
             const { data, checked, message } = response.data;
             if (checked === true && data && data.user) {
-              const { username, name, email, phone } = data.user;
+              const { username, name, email, phone, role_id } = data.user;
               frmSave.setFieldValue("username", username);
               frmSave.setFieldValue("name", name);
               frmSave.setFieldValue("email", email);
               frmSave.setFieldValue("phone", phone);
+              frmSave.setFieldValue("role_id", role_id ? role_id.toString() : "");
             } else {
               Toast.fire({
                 icon: "error",
@@ -186,6 +197,38 @@ const UserForm = () => {
     };
     loadUserItem();
   }, [user_id]);
+  React.useEffect(() => {
+    const loadRoleList = () => {
+      AxiosService()
+        .get("/auth/role/list", { headers: { isShowLoading: true } })
+        .then((response: any) => {
+          const { data, checked, message } = response.data;
+          if (checked && data && data.roles && data.roles.length > 0) {
+            const list: IRole[] = data.roles;
+            list.unshift({ id: 0, name: "---Please select role---", label: "", value: "" });
+            const nextState = produce(list, (draft) => {
+              draft.forEach((item: IRole) => {
+                item.label = item.name.toString().trim();
+                item.value = item.id.toString().trim();
+              });
+            });
+            setRoleList(nextState);
+          } else {
+            Toast.fire({
+              icon: "error",
+              title: t(message)
+            });
+          }
+        })
+        .catch((err: any) => {
+          Toast.fire({
+            icon: "error",
+            title: err.data && err.data.message ? err.data.message : ""
+          });
+        });
+    };
+    loadRoleList();
+  }, []);
   return (
     <Form name="basic" onFinish={onFinish} layout="vertical" form={frmSave}>
       <Card
@@ -229,6 +272,13 @@ const UserForm = () => {
           <Col span={12}>
             <Form.Item<FieldType> label={t("Phone")} name="phone" rules={[{ required: true }]}>
               <Input />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <Form.Item<FieldType> label={t("Role")} name="role_id" rules={[{ required: true }]}>
+              <Select allowClear placeholder={t("Select a option and change input text above")} options={roleList} />
             </Form.Item>
           </Col>
         </Row>

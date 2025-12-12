@@ -14,6 +14,7 @@ interface DataType {
   name: string;
   phone: string;
   email: string;
+  role_name: string;
 }
 const Toast = Swal.mixin({
   toast: true,
@@ -50,6 +51,12 @@ const UserList = () => {
       title: "Email",
       dataIndex: "email",
       key: "email",
+      render: (text) => <span>{text}</span>
+    },
+    {
+      title: "Role",
+      dataIndex: "role_name",
+      key: "role_name",
       render: (text) => <span>{text}</span>
     },
     {
