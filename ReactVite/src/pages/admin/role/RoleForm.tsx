@@ -38,7 +38,7 @@ const RoleForm = () => {
       actionUrl = "/auth/role/save";
     }
     AxiosService()
-      .post(actionUrl, { name: role_name }, { headers: { isShowLoading: true } })
+      .post(actionUrl, { name: role_name ? role_name.trim() : "" }, { headers: { isShowLoading: true } })
       .then((response: any) => {
         const { checked, message } = response.data;
         if (checked === true) {
@@ -63,26 +63,28 @@ const RoleForm = () => {
   };
   React.useEffect(() => {
     const loadRoleItem = () => {
-      AxiosService()
-        .get("/auth/role/detail/" + role_id, { headers: { isShowloading: true } })
-        .then((response: any) => {
-          const { data, checked, message } = response.data;
-          if (checked === true && data && data.role) {
-            const { name } = data.role;
-            frm.setFieldValue("role_name", name);
-          } else {
+      if (role_id) {
+        AxiosService()
+          .get("/auth/role/detail/" + role_id, { headers: { isShowloading: true } })
+          .then((response: any) => {
+            const { data, checked, message } = response.data;
+            if (checked === true && data && data.role) {
+              const { name } = data.role;
+              frm.setFieldValue("role_name", name);
+            } else {
+              Toast.fire({
+                icon: "error",
+                title: t(message)
+              });
+            }
+          })
+          .catch((err: any) => {
             Toast.fire({
               icon: "error",
-              title: t(message)
+              title: err.data.message
             });
-          }
-        })
-        .catch((err: any) => {
-          Toast.fire({
-            icon: "error",
-            title: err.data.message
           });
-        });
+      }
     };
     loadRoleItem();
   }, [role_id]);
