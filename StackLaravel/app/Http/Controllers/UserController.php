@@ -220,8 +220,10 @@ class UserController extends Controller
             $query=DB::table("users");
             $query->leftJoin("roles","users.role_id","=","roles.id");
             $query->select("users.id","users.username","users.name","users.email","users.phone","roles.name as role_name");
-            $users=$query->get();
-            $data["users"]=$users;                    
+            $users=$query->orderBy("users.username","asc")->get();
+            $total = DB::table('users')->count();
+            $data["users"]=$users;  
+            $data["total"]=$total;                  
             return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
     }
     public function delete(Request $request,string $id=null){      

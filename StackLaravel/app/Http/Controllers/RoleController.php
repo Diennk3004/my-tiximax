@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Role;
 class RoleController extends Controller
@@ -9,9 +9,13 @@ class RoleController extends Controller
     public function getList(){
          $checked=true;
             $message="";
-            $data=array();       
-            $roles=Role::all();
+            $data=array();  
+            $query=    DB::table("roles"); 
+            $query->select("roles.id","roles.name");
+            $roles= $query->orderBy("roles.name","asc")->get();    
+            $total = DB::table('roles')->count();        
             $data["roles"]=$roles;     
+            $data["total"]=$total;
             return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
     }
     public function getDetail(string $id){

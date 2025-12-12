@@ -1,6 +1,6 @@
 import { AxiosService } from "@/utils";
 import { PlusOutlined } from "@ant-design/icons";
-import { Table, type TableProps, Card } from "antd";
+import { Table, type TableProps, Card, type GetProp } from "antd";
 import clsx from "clsx";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -9,11 +9,26 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useAppDispatch, useAuth } from "@/hooks";
 import { loginAction } from "@/slices";
-interface DataType {
+import { produce } from "immer";
+type TablePaginationConfig = Exclude<GetProp<TableProps, "pagination">, boolean>;
+type IRole = {
+  menu_id: number;
+  role_id: number;
+  role_name: string;
+};
+interface IMenu {
   key: string;
   id: number;
   name: string;
   url: string;
+  role_name: string[];
+  role_list: IRole[];
+}
+interface TableParams {
+  pagination?: TablePaginationConfig;
+  sortField?: string;
+  sortOrder?: string;
+  filters?: Parameters<GetProp<TableProps, "onChange">>[1];
 }
 const Toast = Swal.mixin({
   toast: true,
@@ -27,7 +42,7 @@ const Toast = Swal.mixin({
   }
 });
 const MenuList = () => {
-  const columns: TableProps<DataType>["columns"] = [
+  const columns: TableProps<IMenu>["columns"] = [
     {
       title: "Name",
       dataIndex: "name",
@@ -39,6 +54,28 @@ const MenuList = () => {
       dataIndex: "url",
       key: "url",
       render: (text) => <span>{text}</span>
+    },
+    {
+      title: "Role",
+      key: "role_name",
+      dataIndex: "role_name",
+      render: (_, { role_list }) => {
+        return (
+          <React.Fragment>
+            {role_list && role_list.length > 0 && (
+              <div className={clsx(["flex", "gap-x-2"])}>
+                {role_list.map((elmt: IRole, idx: number) => {
+                  return (
+                    <div key={`role-${idx}`} className={clsx(["bg-gray-100", "border", "border-gray-300", "rounded-sm", "pl-2", "pr-2", "text-xs"])}>
+                      {elmt.role_name}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </React.Fragment>
+        );
+      }
     },
     {
       title: "",
@@ -59,16 +96,43 @@ const MenuList = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { user } = useAuth();
-  const [menuList, setMenuList] = React.useState<DataType[]>([]);
+  const [menuList, setMenuList] = React.useState<IMenu[]>([]);
+  const [tableParams, setTableParams] = React.useState<TableParams>({
+    pagination: {
+      current: 1,
+      pageSize: 50
+    }
+  });
   const loadMenuList = () => {
     AxiosService()
       .get("/auth/menu/list", { headers: { isShowLoading: true } })
       .then((response: any) => {
+        let total = 0;
         const { checked, data } = response.data;
-        const { menus } = data;
-        if (checked) {
-          setMenuList(menus);
+        if (checked && data && data.menus && data.menus.length > 0) {
+          total = parseInt(data.total);
+          let menuData: IMenu[] = data.menus;
+          let menuRoleData: IRole[] = data.menu_role;
+          const nextState: IMenu[] = produce(menuData, (draft) => {
+            if (menuRoleData.length > 0) {
+              draft.forEach((elmt: IMenu) => {
+                let menuId: number = elmt.id;
+                let menuRoleFiltered: IRole[] = menuRoleData.filter((item) => item.menu_id === menuId);
+                elmt.role_list = menuRoleFiltered;
+              });
+            }
+          });
+          setMenuList(nextState);
+        } else {
+          setMenuList([]);
         }
+        setTableParams({
+          ...tableParams,
+          pagination: {
+            ...tableParams.pagination,
+            total
+          }
+        });
       });
   };
   React.useEffect(() => {
@@ -127,7 +191,7 @@ const MenuList = () => {
           </div>
         }
       >
-        <Table<DataType> columns={columns} dataSource={menuList} />
+        <Table<IMenu> columns={columns} dataSource={menuList} pagination={tableParams.pagination} />
       </Card>
     </React.Fragment>
   );

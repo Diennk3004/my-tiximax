@@ -1,12 +1,13 @@
 import { AxiosService } from "@/utils";
 import { PlusOutlined } from "@ant-design/icons";
-import { Table, type TableProps, Card } from "antd";
+import { Table, type TableProps, Card, type GetProp } from "antd";
 import clsx from "clsx";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { AppButton } from "@/components";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+type TablePaginationConfig = Exclude<GetProp<TableProps, "pagination">, boolean>;
 interface DataType {
   key: string;
   id: number;
@@ -23,6 +24,12 @@ const Toast = Swal.mixin({
     toast.onmouseleave = Swal.resumeTimer;
   }
 });
+interface TableParams {
+  pagination?: TablePaginationConfig;
+  sortField?: string;
+  sortOrder?: string;
+  filters?: Parameters<GetProp<TableProps, "onChange">>[1];
+}
 const RoleList = () => {
   const columns: TableProps<DataType>["columns"] = [
     {
@@ -48,16 +55,32 @@ const RoleList = () => {
   ];
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [tableParams, setTableParams] = React.useState<TableParams>({
+    pagination: {
+      current: 1,
+      pageSize: 50
+    }
+  });
   const [roleList, setRoleList] = React.useState<DataType[]>([]);
   const loadRoleList = () => {
     AxiosService()
       .get("/auth/role/list", { headers: { isShowLoading: true } })
       .then((response: any) => {
+        let total = 0;
         const { checked, data } = response.data;
-        const { roles } = data;
-        if (checked) {
-          setRoleList(roles);
+        if (checked && data && data.roles && data.roles.length > 0) {
+          total = parseInt(data.total);
+          setRoleList(data.roles);
+        } else {
+          setRoleList([]);
         }
+        setTableParams({
+          ...tableParams,
+          pagination: {
+            ...tableParams.pagination,
+            total
+          }
+        });
       });
   };
   React.useEffect(() => {
@@ -112,7 +135,7 @@ const RoleList = () => {
         </div>
       }
     >
-      <Table<DataType> columns={columns} dataSource={roleList} />
+      <Table<DataType> columns={columns} dataSource={roleList} pagination={tableParams.pagination} />
     </Card>
   );
 };

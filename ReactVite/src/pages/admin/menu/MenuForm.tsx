@@ -35,7 +35,7 @@ const MenuForm = () => {
   const { t } = useTranslation();
   const { menu_id } = useParams();
   const [frm] = Form.useForm();
-  const [roleList, setRoleList] = React.useState<IRole[]>([]);
+  const [roleList, setRoleList] = React.useState<IRole[]>([{ label: "Admin", value: "1", id: 1, name: "Admin" }]);
   const handleBack = () => {
     navigate("/admin/menu/list");
   };
@@ -82,6 +82,12 @@ const MenuForm = () => {
               const { name, url } = data.menu;
               frm.setFieldValue("menu_name", name);
               frm.setFieldValue("menu_url", url);
+              const list: IRole[] = data.menu_role;
+              let idRoleList: string[] = [];
+              for (var i = 0; i < list.length; i++) {
+                idRoleList.push(list[i].id.toString());
+              }
+              frm.setFieldValue("role_ids", idRoleList);
             } else {
               Toast.fire({
                 icon: "error",
@@ -107,7 +113,6 @@ const MenuForm = () => {
           const { data, checked, message } = response.data;
           if (checked && data && data.roles && data.roles.length > 0) {
             const list: IRole[] = data.roles;
-            list.unshift({ id: 0, name: "---Please select role---", label: "", value: "" });
             const nextState = produce(list, (draft) => {
               draft.forEach((item: IRole) => {
                 item.label = item.name.toString().trim();
@@ -156,7 +161,7 @@ const MenuForm = () => {
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item<FieldType> label={t("Roles")} name="role_ids" rules={[{ required: true }]}>
-              <Select mode="multiple" allowClear className={clsx(["w-full"])} placeholder="Please select" options={roleList} />
+              <Select mode="multiple" allowClear className={clsx(["w-full"])} defaultValue={["1"]} placeholder="Please select" options={roleList} />
             </Form.Item>
           </Col>
           <Col span={12}></Col>

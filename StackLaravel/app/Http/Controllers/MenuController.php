@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Menu;
+use App\Models\MenuRole;
 use Illuminate\Support\Facades\DB;
 class MenuController extends Controller
 {
@@ -14,7 +15,14 @@ class MenuController extends Controller
             $data=array();       
             $query=DB::table("menu");
             $menus=$query->get();
-            $data["menus"]=$menus;     
+            $query=DB::table("menu_role");
+            $query->join("roles","menu_role.role_id","=","roles.id");
+            $query->select("menu_role.menu_id","menu_role.role_id","roles.name as role_name");
+            $menu_role=$query->orderBy("roles.name","asc")->get();
+            $total = DB::table('menu')->count();
+            $data["menus"]=$menus;   
+            $data["menu_role"]=$menu_role;  
+            $data["total"]=$total;
             return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
              
     }
@@ -28,7 +36,13 @@ class MenuController extends Controller
             }    
             if($checked===true){
                 $menu=Menu::find($id);
-                $data["menu"]=$menu;     
+                $data["menu"]=$menu;   
+                $query=DB::table("menu_role");
+                $query->join("roles","menu_role.role_id","=","roles.id");
+                $query->where("menu_role.menu_id","=",$id);
+                $query->select("menu_role.role_id as id","roles.name");
+                $menu_role=$query->get();  
+                $data["menu_role"]=$menu_role;
             }            
             return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
     }
@@ -65,19 +79,21 @@ class MenuController extends Controller
                 $menu->save();
                 $data["menu"]=$menu; 
                 if($request->role_ids && is_array($request->role_ids)){
-                    $roleIdList=$request->role_ids;
+                    $roleIdList=$request->role_ids;                    
                     if($id){
                         $delete=DB::table("menu_role")->where("menu_id","=",$id)->delete();
                         foreach($roleIdList as $key => $val ){
                            $menuRole=new MenuRole;
                            $menuRole->menu_id=$menu->id;
                            $menuRole->role_id=$val;
+                           $menuRole->save();
                         }
                     }else{
                         foreach($roleIdList as $key => $val ){
                            $menuRole=new MenuRole;
                            $menuRole->menu_id=$menu->id;
                            $menuRole->role_id=$val;
+                           $menuRole->save();
                         }
                     }                    
                 }else{
