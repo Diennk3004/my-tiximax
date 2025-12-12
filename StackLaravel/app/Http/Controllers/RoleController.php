@@ -14,13 +14,13 @@ class RoleController extends Controller
             $data["roles"]=$roles;     
             return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
     }
-    public function getDetail(string $id=null){
+    public function getDetail(string $id){
             $checked=true;
             $message="";
-            $data=array();   
+            $data=array();               
             if(!$id){
                 $checked=false;
-                $message="Item not founded";
+                $message="Item not found";
             }    
             if($checked===true){
                 $role=Role::find($id);
@@ -38,13 +38,13 @@ class RoleController extends Controller
                 $role=Role::find($id);
                 if(!$role){
                     $checked=false;
-                    $message="Item not founded";
+                    $message="Item not found";
                 }                
             }else{                
                 $role=new Role;
                 if(!$request->name){
                     $checked=false;
-                    $message="Name is empty";
+                    $message="Name is required";
                 }                
             }                        
             if($checked==true){
@@ -69,7 +69,7 @@ class RoleController extends Controller
         if($request->isMethod("put")){
             if(!$id){
                 $checked=false;    
-                $message="Empty deleted id";            
+                $message="Id is required";            
             }             
             if($checked===true){
                 $role=Role::find($id);                      
@@ -77,7 +77,8 @@ class RoleController extends Controller
                     $checked=false;
                     $message="Item not found";
                 }else{                                     
-                    $role::destroy($id);                    
+                    $role::destroy($id);  
+                    $message="Delete successfully";                  
                 }     
             }
         }

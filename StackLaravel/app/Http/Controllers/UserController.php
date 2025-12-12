@@ -21,7 +21,7 @@ class UserController extends Controller
                 $userByUsername=User::where("username",$username)->first();                  
                 if(!$userByUsername){
                     $checked=false;
-                    $message="Username not found";
+                    $message="Item not found";
                 }else{
                     $credentials = [
                         "email" => $userByUsername->email,
@@ -57,7 +57,7 @@ class UserController extends Controller
             $data=array();   
             if(!$id){
                 $checked=false;
-                $message="Item not founded";
+                $message="Item not found";
             }    
             if($checked===true){
                 $user=User::find($id);
@@ -78,7 +78,7 @@ class UserController extends Controller
         }
         return response()->json(["data"=>$data,"checked"=>$checked,"message"=>$message],200);
     }
-    public function save(?string $id,Request $request){        
+    public function save(Request $request,string $id=null){        
         $checked=true;
         $message="";
         $data=array();
@@ -88,25 +88,38 @@ class UserController extends Controller
                 $user=User::find($id);
                 if(!$user){
                     $checked=false;
-                    $message="Item not founded";
+                    $message="Item not found";
                 }
             }else{
                 $user=new User;
                 if(!$request->name){
                     $checked=false;
-                    $message="Name is empty";
+                    $message="Name is required";
                 }
                 if(!$request->username){
                     $checked=false;
-                    $message="Username is empty";
+                    $message="Username is required";
                 }
+                if(!$request->password || !$request->password_confirmed){
+                    if(!$request->password){
+                        $checked=false;
+                        $message="Password is required";
+                    }
+                    if(!$request->password_confirmed){
+                        $checked=false;
+                        $message="Password confirmed is required";
+                    }
+                }else{
+
+                }
+                
                 if(!$request->email){
                     $checked=false;
-                    $message="Email is empty";
+                    $message="Email is required";
                 }
                 if(!$request->phone){
                     $checked=false;
-                    $message="Phone is empty";
+                    $message="Phone is required";
                 }
             }                        
             if($checked==true){

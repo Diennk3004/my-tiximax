@@ -29,6 +29,7 @@ const Toast = Swal.mixin({
 const UserList = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [userList, setUserList] = React.useState<DataType[]>([]);
   const columns: TableProps<DataType>["columns"] = [
     {
       title: "Username",
@@ -59,29 +60,69 @@ const UserList = () => {
       key: "action",
       render: (_, record) => (
         <div className={clsx(["flex", "justify-center", "gap-x-6"])}>
-          <button className={clsx(["cursor-pointer"])}>{t("Edit")}</button>
-          <button className={clsx(["cursor-pointer"])}>{t("Delete")}</button>
+          <button className={clsx(["cursor-pointer"])} onClick={handleEdit(record.id)}>
+            {t("Edit")}
+          </button>
+          <button className={clsx(["cursor-pointer"])} onClick={handleDelete(record.id)}>
+            {t("Delete")}
+          </button>
         </div>
       )
     }
   ];
-  const [userList, setUserList] = React.useState<DataType[]>([]);
+  const loadUserList = () => {
+    AxiosService()
+      .get("/auth/user/list", { headers: { isShowLoading: true } })
+      .then((response: any) => {
+        const { checked, data } = response.data;
+        const { users } = data;
+        if (checked) {
+          setUserList(users);
+        }
+      });
+  };
   React.useEffect(() => {
-    const loadUserList = () => {
-      AxiosService()
-        .get("/auth/user/list", { headers: { isShowLoading: true } })
-        .then((response: any) => {
-          const { checked, data } = response.data;
-          const { users } = data;
-          if (checked) {
-            setUserList(users);
-          }
-        });
-    };
     loadUserList();
   }, []);
   const handleNewForm = () => {
     navigate("/admin/user/add");
+  };
+  const handleEdit = (id: number) => () => {
+    navigate("/admin/user/edit/" + id);
+  };
+  const handleDelete = (id: number) => () => {
+    Swal.fire({
+      title: t("Do you want to delete this item?"),
+      showDenyButton: true,
+      confirmButtonText: "Confirm",
+      denyButtonText: "Cancel"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        AxiosService()
+          .put("/auth/user/delete/" + id, { headers: { isShowLoading: true } })
+          .then((response: any) => {
+            const { checked, message } = response.data;
+            if (checked) {
+              loadUserList();
+              Toast.fire({
+                icon: "success",
+                title: t(message)
+              });
+            } else {
+              Toast.fire({
+                icon: "error",
+                title: t(message)
+              });
+            }
+          })
+          .catch((err: any) => {
+            Toast.fire({
+              icon: "error",
+              title: err.data.message
+            });
+          });
+      }
+    });
   };
   return (
     <React.Fragment>
