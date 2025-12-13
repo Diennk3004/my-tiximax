@@ -17,7 +17,7 @@ export default defineConfig({
     })
   ],
   server: {
-    port: parseInt(process.env.VITE_PORT ? process.env.VITE_PORT : "3001")
+    port: 3000
   },
   resolve: {
     alias: [{ find: "@", replacement: path.resolve(__dirname, "src") }]
