@@ -28,7 +28,7 @@ const AdminLayout = () => {
     <React.Fragment>
       <div className={clsx([stylesContainer.container, "ml-auto", "mr-auto", "h-screen", "flex"])}>
         <div className={clsx(["bg-sky-800", "w-80", "pt-5", "pb-5", "pl-5", "pr-5"])}>
-          <h1 className={clsx(["text-white", "text-center", "font-bold", "text-3xl", "mb-5", styles.logoText])}>TIXIMAX</h1>
+          <h1 className={clsx(["text-white", "text-center", "font-bold", "text-3xl", "mb-5", styles.logoText])}>{import.meta.env.VITE_ENV}</h1>
           {user && user.menu && user.menu.length > 0 && (
             <ul className={clsx(["text-white", "text-md", styles.menuList])}>
               {user.menu.map((item: IMenu, idx: number) => {
