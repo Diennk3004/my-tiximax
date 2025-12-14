@@ -65,7 +65,7 @@ const LoginPage = () => {
         document.cookie = `${import.meta.env.VITE_ACCESS_TOKEN_PREFIX}=token; expires=${getExpired(-100)}; path=/;`;
         Toast.fire({
           icon: "error",
-          title: t(err.data.message)
+          title: t(err?.data?.message)
         });
       });
   };
